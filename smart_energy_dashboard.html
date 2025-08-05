@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Smart Energy Dashboard</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background: #f4f4f4;
+    }
+    h2 {
+      text-align: center;
+    }
+    .card {
+      background: white;
+      padding: 20px;
+      margin-top: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    .label {
+      font-weight: bold;
+    }
+    .value {
+      font-size: 1.5em;
+      color: #008000;
+    }
+  </style>
+</head>
+<body>
+  <h2>📊 Smart Energy Monitoring</h2>
+  <div class="card">
+    <div class="label">Current Consumption:</div>
+    <div id="current" class="value">-- A</div>
+
+    <div class="label" style="margin-top: 10px;">Load Shedding Status:</div>
+    <div id="status" class="value">--</div>
+  </div>
+
+  <script>
+    async function fetchData() {
+      try {
+        const res = await fetch('/data'); // assumes NodeMCU or server sends JSON here
+        const data = await res.json();
+        document.getElementById('current').innerText = data.current.toFixed(2) + ' A';
+        document.getElementById('status').innerText = data.load_shed ? '⚠️ ACTIVE' : '✅ NORMAL';
+      } catch (e) {
+        document.getElementById('current').innerText = '-- A';
+        document.getElementById('status').innerText = '⚠️ Disconnected';
+      }
+    }
+
+    setInterval(fetchData, 2000);
+    fetchData();
+  </script>
+</body>
+</html>
